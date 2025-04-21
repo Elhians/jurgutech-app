@@ -1,0 +1,11 @@
+<div class="coop-container">
+  <h2>Mes Poulaillers</h2>
+  <ul>
+    <li *ngFor="let coop of coops" [class.alert]="isThresholdBreached(coop)">
+      <h3>{{ coop.name }}</h3>
+      <p>Température: {{ coop.temperature }}°C</p>
+      <p>Humidité: {{ coop.humidity }}%</p>
+      <p *ngIf="isThresholdBreached(coop)" class="alert-message">⚠️ Seuil dépassé !</p>
+    </li>
+  </ul>
+</div>

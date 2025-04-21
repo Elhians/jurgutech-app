@@ -1,0 +1,26 @@
+<app-navbar></app-navbar>
+<div class="auth-container">
+  <div class="auth-box">
+    <h2>Créer un compte</h2>
+  <form (ngSubmit)="onRegister()">
+    <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required class="input-field" />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required class="input-field" />
+    <button type="submit" class="btn btn-primary">S’inscrire</button>
+  </form>
+  <p *ngIf="error" class="error-message">{{ error }}</p>
+  <a routerLink="/auth/login" class="link">Déjà un compte ? Se connecter</a>
+  </div>
+</div>
+
+<!-- <div class="auth-container">
+  <div class="auth-box">
+    <h2>Connexion</h2>
+    <form (ngSubmit)="onLogin()">
+      <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required />
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required />
+      <button type="submit">Se connecter</button>
+    </form>
+    <p *ngIf="error" class="error">{{ error }}</p>
+    <a routerLink="/register">Créer un compte</a>
+  </div>
+</div> -->

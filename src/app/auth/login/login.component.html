@@ -1,0 +1,31 @@
+<app-navbar></app-navbar>
+<div class="auth-container">
+  <div class="auth-box">
+    <h2>Connexion</h2>
+  <form (ngSubmit)="onLogin()" class="auth-form">
+    <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required class="input-field" />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required class="input-field" />
+    <button type="submit" class="btn btn-primary">Se connecter</button>
+  </form>
+  <p>ou</p>
+
+<button (click)="onLoginWithGoogle()" class="google-btn">
+  <img src="https://img.icons8.com/color/16/000000/google-logo.png" />
+  Se connecter avec Google
+</button>
+
+  <p *ngIf="error" class="error-message">{{ error }}</p>
+  <a routerLink="/auth/register" class="link">Créer un compte</a>
+  <p class="link" (click)="showResetPassword = !showResetPassword">
+    {{ showResetPassword ? 'Retour à la connexion' : 'Mot de passe oublié ?' }}
+  </p>
+
+  <div *ngIf="showResetPassword" class="reset-password">
+    <input type="email" [(ngModel)]="resetEmail" placeholder="Entrez votre email" class="input-field" />
+    <button (click)="onResetPassword()" class="btn btn-primary">Réinitialiser</button>
+    <p *ngIf="resetMessage" class="success-message">{{ resetMessage }}</p>
+  </div>
+  </div>
+</div>
+
+

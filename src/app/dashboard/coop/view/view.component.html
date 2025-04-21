@@ -1,0 +1,36 @@
+<div class="coop-view">
+    <h2>Poulailler : {{ coopId }}</h2>
+  
+    <!-- Commandes -->
+    <div class="controls">
+      <button class="btn start" (click)="sendCommand('start')">🚀 Démarrer</button>
+      <button class="btn stop" (click)="sendCommand('stop')">🛑 Arrêter</button>
+      <button class="btn clean" (click)="sendCommand('clean')">🧼 Nettoyer</button>
+    </div>
+  
+    <!-- Cartes capteurs -->
+    <div class="sensor-grid">
+      <div class="card" (click)="viewDetails('temperature')">
+        <h3>🌡 Température</h3>
+        <p>{{ sensorData?.temperature }} 0°C</p>
+      </div>
+      <div class="card" (click)="viewDetails('humidity')">
+        <h3>💧 Humidité</h3>
+        <p>{{ sensorData?.humidity }} 0 %</p>
+      </div>
+      <div class="card" (click)="viewDetails('waterLevel')">
+        <h3>🚰 Niveau d'eau</h3>
+        <p>{{ sensorData?.waterLevel }} 0 %</p>
+      </div>
+      <div class="card" (click)="viewDetails('foodLevel')">
+        <h3>🍗 Nourriture</h3>
+        <p>{{ sensorData?.foodLevel }} 0 %</p>
+      </div>
+      <div class="card" (click)="viewDetails('lastCleaned')">
+        <h3>🧽 Dernier nettoyage</h3>
+        <p>{{ sensorData?.lastCleaned?.toDate() | date:'short' }} 12/02/2025</p>
+      </div>
+    </div>
+  </div>
+  
+

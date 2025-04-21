@@ -1,0 +1,108 @@
+import { Component, OnInit } from '@angular/core';
+import{ CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth/auth.service';
+import { CoopService } from './coop/coop.service';
+import { Coop } from './coop/coop.model';
+import { Router } from '@angular/router';
+import { User } from '../auth/user.model';
+import { MatDialog } from '@angular/material/dialog';
+import { QRCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
+import { AccessCodeModalComponent } from './acces-code-modal/acces-code-modal.component';
+
+
+@Component({
+  selector: 'app-dashboard',
+  imports: [
+    CommonModule,
+    FormsModule,
+  ],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss'
+})
+export class DashboardComponent implements OnInit {
+  user: User | null = null;
+  coops: Coop[] = [];
+  loading = true;
+  error: string = '';
+  codeInput: string = '';
+  showCodeInput: boolean = false;
+
+  constructor(
+    private authService: AuthService,
+    private coopService: CoopService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    this.authService.user$.subscribe(user => {
+      this.user = user ? {
+        uid: user.uid,
+        email: user.email || '',
+        displayName: user.displayName || ''
+      } : null;
+      if (user?.uid) {
+        this.coopService.getUserCoops(user.uid).subscribe({
+          next: (data) => {
+            this.coops = data;
+            this.loading = false;
+          },
+          error: (err) => {
+            this.error = err.message;
+            this.loading = false;
+          }
+        });
+      }
+    });
+  }
+
+  goToCoop(id: string) {
+    this.router.navigate(['/dashboard/coop/view', id]);
+  }
+
+  addCoopWithCode() {
+    const dialogRef = this.dialog.open(AccessCodeModalComponent, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(code => {
+      if (code) {
+        this.coopService.linkCoopByCode(code).then(() => {
+          // Reload the list
+          this.ngOnInit();
+        }).catch(err => this.error = err.message);
+      }
+    });
+  }
+
+  addCoopWithQR() {
+    const dialogRef = this.dialog.open(QRCodeScannerComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(qrCode => {
+      if (qrCode) {
+        this.coopService.linkCoopByCode(qrCode).then(() => {
+          this.ngOnInit();
+        }).catch(err => this.error = err.message);
+      }
+    });
+  }
+
+  submitAccessCode() {
+    if (!this.codeInput.trim()) {
+      this.error = 'Veuillez entrer un code valide.';
+      return;
+    }
+
+    this.coopService.linkCoopByCode(this.codeInput)
+      .then(() => {
+        this.error = '';
+        this.codeInput = '';
+        this.showCodeInput = false;
+        this.ngOnInit(); // Reload the list of coops
+      })
+      .catch(err => this.error = err.message);
+  }
+}

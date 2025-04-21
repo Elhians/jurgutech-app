@@ -1,0 +1,12 @@
+<h2>Mes poulaillers</h2>
+
+<div *ngIf="coops.length === 0">Aucun poulailler trouvé.</div>
+
+<div class="coop-grid">
+    <div class="coop-card" *ngFor="let coop of coops" (click)="goToDetails(coop.id)">
+        <h3>{{ coop.name }}</h3>
+        <p>Code : {{ coop.accessCode }}</p>
+        <p>Ajouté : {{ coop.createdAt?.toDate() | date:'short' }}</p>
+    </div>
+</div>
+
