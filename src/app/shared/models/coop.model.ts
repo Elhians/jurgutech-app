@@ -4,5 +4,7 @@ export interface Coop {
     ownerId: string;
     accessCode: string;
     qrUsed?: boolean;
+    isRunning?: boolean; // Fixed typo
+    authorizedUsers?: string[]; // Array of user IDs
     createdAt?: any; // Timestamp Firestore
 }

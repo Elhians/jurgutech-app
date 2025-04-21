@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +29,7 @@ export class LoginComponent {
   resetMessage = '';
   showResetPassword = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private location: Location) {}
 
   onLogin() {
     this.authService.login(this.email, this.password)
@@ -51,6 +51,10 @@ export class LoginComponent {
     this.authService.resetPassword(this.resetEmail)
       .then(() => this.resetMessage = 'Email de réinitialisation envoyé.')
       .catch(err => this.error = err.message);
+  }
+
+  goBack() {
+    this.location.back(); // Navigate to the previous page
   }
   
 }

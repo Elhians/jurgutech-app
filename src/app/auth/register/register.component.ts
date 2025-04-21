@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,7 @@ export class RegisterComponent {
   password = '';
   error = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private location: Location) {}
 
   onRegister() {
     this.authService.register(this.email, this.password)
@@ -33,5 +34,9 @@ export class RegisterComponent {
         this.router.navigate(['/dashboard']); // Redirect to dashboard
       })
       .catch(err => this.error = err.message);
+  }
+
+  goBack() {
+    this.location.back(); // Navigate to the previous page
   }
 }

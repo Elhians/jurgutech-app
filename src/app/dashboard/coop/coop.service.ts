@@ -1,5 +1,5 @@
-  import {
-    Firestore, collection, query, where, getDocs, updateDoc, doc, docData, arrayUnion
+import {
+    Firestore, collection, query, where, getDocs, updateDoc, doc, docData, arrayUnion, serverTimestamp
   } from '@angular/fire/firestore';
   import { inject, Injectable } from '@angular/core';
   import { Auth } from '@angular/fire/auth';
@@ -39,6 +39,27 @@
       const ref = doc(this.firestore, `coops/${coopId}/sensorData/latest`);
       return docData(ref);
     }
-  }
+
+    async sendCommand(coopId: string, command: string): Promise<void> {
+      const commandRef = doc(this.firestore, `coops/${coopId}/commands`);
+      await updateDoc(commandRef, { command, timestamp: serverTimestamp() });
+    }
   
+    async updateStatus(coopId: string, field: string, value: any): Promise<void> {
+      const coopRef = doc(this.firestore, `coops/${coopId}`);
+      await updateDoc(coopRef, { [field]: value });
+    }
+  
+    async refillResource(coopId: string, resource: 'water' | 'food'): Promise<void> {
+      const resourceRef = doc(this.firestore, `coops/${coopId}/sensorData/latest`);
+      const updateData = resource === 'water' ? { waterLevel: 100 } : { foodLevel: 100 };
+      await updateDoc(resourceRef, updateData);
+    }
+  
+    async markCleaned(coopId: string): Promise<void> {
+      const coopRef = doc(this.firestore, `coops/${coopId}`);
+      await updateDoc(coopRef, { lastCleaned: serverTimestamp() });
+    }
+  }
+
 

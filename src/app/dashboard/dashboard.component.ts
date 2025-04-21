@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import{ CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { CoopService } from './coop/coop.service';
-import { Coop } from './coop/coop.model';
+import { Coop } from '../shared/models/coop.model';
 import { Router } from '@angular/router';
-import { User } from '../auth/user.model';
+import { User } from '../shared/models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { QRCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
 import { AccessCodeModalComponent } from './acces-code-modal/acces-code-modal.component';
@@ -32,7 +33,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private coopService: CoopService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private location: Location // Inject Location service
   ) {}
 
   ngOnInit(): void {
@@ -101,8 +103,22 @@ export class DashboardComponent implements OnInit {
         this.error = '';
         this.codeInput = '';
         this.showCodeInput = false;
-        this.ngOnInit(); // Reload the list of coops
+        this.loadCoops(); // Refactor to reload only coops
       })
       .catch(err => this.error = err.message);
+  }
+
+  goBack() {
+    this.location.back(); // Navigate to the previous page
+  }
+
+  private loadCoops() {
+    const userId = this.user?.uid;
+    if (userId) {
+      this.coopService.getUserCoops(userId).subscribe({
+        next: (data) => this.coops = data,
+        error: (err) => this.error = err.message
+      });
+    }
   }
 }

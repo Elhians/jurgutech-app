@@ -1,0 +1,66 @@
+/* ...existing code... */
+
+.sensor-grid .sensor-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .sensor-grid .sensor-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sensor-card {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}
+
+/* ...existing code... */
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    justify-content: center;
+}
+
+.video-section {
+    text-align: center;
+}
+
+@media (max-width: 670px) {
+    .sensor-grid .sensor-cards,
+    .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sensor-card, .video-section {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .video-section video {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 400px) {
+    .sensor-grid .sensor-cards,
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ...existing code... */
+
+mat-card-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ...existing code... */

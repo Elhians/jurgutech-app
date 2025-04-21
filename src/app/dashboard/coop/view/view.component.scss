@@ -1,6 +1,15 @@
+.page {
+  background-image: url('../../../../assets/coop-large-view-removebg-preview.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh; /* Ensure it covers the full viewport height */
+  width: 100vw; /* Ensure it covers the full viewport width */
+  margin: 0;
+  padding: 0;
+}
 .coop-view {
     padding: 2rem;
-  
     h2 {
       margin-bottom: 1rem;
     }
@@ -48,11 +57,13 @@
       }
     }
   
-    .sensor-grid {
+    .sensor-grid, .sensor-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Smaller cards */
+      gap: 1rem; /* Adjust spacing between cards */
+    }
   
+    .sensor-grid {
       .card {
         background: #fff;
         padding: 1rem;
@@ -88,18 +99,88 @@
       .coop-commands {
         display: flex;
         gap: 1rem;
+        justify-content: center;
         margin-bottom: 2rem;
-      }
       
-      .sensor-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        button {
+          flex: 1; /* Ensure buttons take equal width */
+          max-width: 200px; /* Default max width */
+          text-align: center;
+        }
+      
+        @media (min-width: 1024px) {
+          button {
+            max-width: 300px; /* Extend button width on large screens */
+          }
+        }
+      
+        @media (max-width: 768px) {
+          flex-direction: column; /* Stack buttons vertically on small screens */
+          align-items: center; /* Center buttons horizontally */
+          gap: 1rem;
+      
+          button {
+            width: 100%; /* Make buttons full width */
+            max-width: 300px; /* Optional: Limit the maximum width for better alignment */
+          }
+        }
       }
       
       .sensor-card {
         padding: 1rem;
         text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #ffffff;
+      
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon {
+          font-size: 1.5rem;
+          margin-right: 0.5rem;
+          vertical-align: middle;
+        }
+      
+        mat-card-title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          font-weight: bold;
+          margin-bottom: 0.5rem;
+          color: #333;
+        }
+      
+        mat-card-content {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #555;
+        }
+      
+        mat-card-actions {
+          display: flex;
+          justify-content: center; /* Center the buttons horizontally */
+          align-items: center; /* Center the buttons vertically */
+          gap: 0.5rem; /* Add spacing between buttons */
+          margin-top: 1rem; /* Add some space above the actions */
+        }
+      
+        button {
+          padding: 0.5rem 1rem;
+          border-radius: 5px;
+          font-size: 0.9rem;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+      
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
       
         &.temperature {
           background: #ffe0b2;
@@ -120,10 +201,222 @@
         &.clean {
           background: #ede7f6;
         }
+
+        h3 {
+          font-size: 1rem; /* Smaller title */
+          margin-bottom: 0.5rem;
+        }
       
-        mat-card-actions {
-          justify-content: center;
+        p {
+          font-size: 0.9rem; /* Smaller text */
+        }
+      }
+      .badge {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        margin-left: 1rem;
+      
+        &.running {
+          background-color: #e6f4ea;
+          color: #2e7d32;
+        }
+      
+        &.stopped {
+          background-color: #fdecea;
+          color: #c62828;
         }
       }
       
   }
+
+button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  &.mat-button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  &:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  &.warn {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  &.primary {
+    background-color: #28a745;
+    color: white;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+button.start {
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+button.stop {
+  background-color: #dc3545; /* Red */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.video-section {
+  text-align: center;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .expand-button {
+    background-color: #ffcf00;
+    color: #232526;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #ffc107;
+    }
+  }
+
+  video {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  video.expanded {
+    width: 100%;
+    height: 80vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+.return-button {
+  background-color: #ffcf00; /* Match the app's primary color */
+  color: #232526; /* Dark text for contrast */
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #ffc107; /* Slightly lighter shade on hover */
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  display: inline-block;
+  margin-right: auto; /* Align to the left */
+}
+
+.btn {
+  background-color: #3498db; /* Default button color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .sensor-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two cards per row on mobile */
+  }
+}

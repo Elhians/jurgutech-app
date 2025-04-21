@@ -1,36 +1,117 @@
-<div class="coop-view">
-    <h2>Poulailler : {{ coopId }}</h2>
-  
-    <!-- Commandes -->
-    <div class="controls">
-      <button class="btn start" (click)="sendCommand('start')">🚀 Démarrer</button>
-      <button class="btn stop" (click)="sendCommand('stop')">🛑 Arrêter</button>
-      <button class="btn clean" (click)="sendCommand('clean')">🧼 Nettoyer</button>
-    </div>
-  
-    <!-- Cartes capteurs -->
-    <div class="sensor-grid">
-      <div class="card" (click)="viewDetails('temperature')">
-        <h3>🌡 Température</h3>
-        <p>{{ sensorData?.temperature }} 0°C</p>
+<div class="page">
+    <div class="coop-view">
+        <button class="return-button" (click)="goBack()">⬅ Retour</button>
+        <h2 class="coop-title">
+            {{ coop?.name }}
+            <span
+              class="badge"
+              [ngClass]="{ 'running': coop?.isRunning, 'stopped': !coop?.isRunning }"
+            >
+              {{ coop?.isRunning ? '🟢 En marche' : '🔴 À l’arrêt' }}
+            </span>
+        </h2>
+          
+      
+        <!-- Commandes -->
+        <div class="coop-commands">
+            <button
+              *ngIf="!coop?.isRunning"
+              mat-raised-button
+              class="start"
+              (click)="startSystem()"
+            >
+              🚀 Démarrer le système
+            </button>
+          
+            <button
+              *ngIf="coop?.isRunning"
+              mat-raised-button
+              class="stop"
+              (click)="stopSystem()"
+            >
+              ⛔ Éteindre le système
+            </button>
+          </div>
+          
+      
+        <!-- Cartes capteurs -->
+        <div class="sensor-grid">
+            <div class="sensor-cards">
+                <!-- Température -->
+                <mat-card class="sensor-card temperature">
+                  <mat-card-title>
+                    <span class="icon">🌡️</span> Température
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.temperature }} 27°C</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewTemperatureDetails()">Détails</button>
+                    <button class="return-button" (click)="changeTemperature()">Changer</button>
+                  </mat-card-actions>
+                </mat-card>
+            
+                <!-- Humidité -->
+                <mat-card class="sensor-card humidity">
+                  <mat-card-title>
+                    <span class="icon">💧</span> Humidité
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.humidity }} 15 %</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewHumidityDetails()">Détails</button>
+                    <button class="return-button" (click)="toggleVent()">Ventilo {{ coop?.isRunning ? 'OFF' : 'ON' }}</button>
+                  </mat-card-actions>
+                </mat-card>
+            
+                <!-- Niveau d'eau -->
+                <mat-card class="sensor-card water">
+                  <mat-card-title>
+                    <span class="icon">🚰</span> Niveau d'eau
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.waterLevel }} 30%</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewWaterDetails()">Détails</button>
+                    <button class="return-button" (click)="refillWater()">Remplir</button>
+                  </mat-card-actions>
+                </mat-card>
+            
+                <!-- Nourriture -->
+                <mat-card class="sensor-card food">
+                  <mat-card-title>
+                    <span class="icon">🍗</span> Niveau de nourriture
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.foodLevel }} 40%</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewFoodDetails()">Détails</button>
+                    <button class="return-button" (click)="refillFood()">Remplir</button>
+                  </mat-card-actions>
+                </mat-card>
+            
+                <!-- Nettoyage -->
+                <mat-card class="sensor-card clean">
+                  <mat-card-title>
+                    <span class="icon">🧹</span> Dernier nettoyage
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.lastCleaned?.toDate() | date:'short' }} 12/02/2025</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewCleanDetails()">Détails</button>
+                    <button class="return-button" (click)="cleanCoop()">Nettoyer</button>
+                  </mat-card-actions>
+                </mat-card>
+              </div>
       </div>
-      <div class="card" (click)="viewDetails('humidity')">
-        <h3>💧 Humidité</h3>
-        <p>{{ sensorData?.humidity }} 0 %</p>
+
+      <!-- Real-time Video Sections -->
+      <div class="video-grid">
+          <div class="video-section" *ngFor="let camera of cameras; let i = index">
+              <h3>Caméra {{ i + 1 }}</h3>
+              <button class="return-button" (click)="openVideoModal(camera.streamUrl)">Agrandir</button>
+              <video 
+                  [src]="camera.streamUrl" 
+                  autoplay 
+                  muted 
+                  controls>
+              </video>
+          </div>
       </div>
-      <div class="card" (click)="viewDetails('waterLevel')">
-        <h3>🚰 Niveau d'eau</h3>
-        <p>{{ sensorData?.waterLevel }} 0 %</p>
-      </div>
-      <div class="card" (click)="viewDetails('foodLevel')">
-        <h3>🍗 Nourriture</h3>
-        <p>{{ sensorData?.foodLevel }} 0 %</p>
-      </div>
-      <div class="card" (click)="viewDetails('lastCleaned')">
-        <h3>🧽 Dernier nettoyage</h3>
-        <p>{{ sensorData?.lastCleaned?.toDate() | date:'short' }} 12/02/2025</p>
-      </div>
-    </div>
-  </div>
-  
+</div>
+
 
