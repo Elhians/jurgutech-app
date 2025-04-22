@@ -12,10 +12,10 @@
       <button class="btn confirm" (click)="submitAccessCode()">Valider</button>
     </div>
   
-    <div *ngIf="loading">Chargement des poulaillers...</div>
-    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="loading" class="info-message">Chargement des poulaillers...</div>
+    <div *ngIf="error" class="error-message styled-error">{{ error }}</div>
   
-    <div *ngIf="coops.length === 0 && !loading">
+    <div *ngIf="coops.length === 0 && !loading" class="info-message styled-info">
       <p>Aucun poulailler associé à ce compte.</p>
     </div>
   

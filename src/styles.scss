@@ -131,3 +131,36 @@ a {
 .link:hover {
   text-decoration: underline;
 }
+
+.styled-error {
+  background-color: #ffe6e6; /* Light red background */
+  color: #d9534f; /* Bootstrap danger red */
+  border: 1px solid #d9534f;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.styled-info {
+  background-color: #e7f3fe; /* Light blue background */
+  color: #31708f; /* Bootstrap info blue */
+  border: 1px solid #bce8f1;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
