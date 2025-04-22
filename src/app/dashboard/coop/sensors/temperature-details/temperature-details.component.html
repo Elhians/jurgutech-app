@@ -1,0 +1,29 @@
+<h3>Température actuelle : {{ currentTemp }} °C</h3>
+
+<canvas baseChart
+  [data]="temperatureChartData"
+  [options]="{ responsive: true }"
+  [type]="'line'">
+</canvas>
+
+<div class="threshold-config">
+  <h4>Définir les seuils</h4>
+  <label>
+    Min :
+    <input type="number" [(ngModel)]="threshold.min" />
+  </label>
+  <label>
+    Max :
+    <input type="number" [(ngModel)]="threshold.max" />
+  </label>
+  <label>
+    Commande :
+    <input type="text" [(ngModel)]="threshold.commandToSend" />
+  </label>
+  <label>
+    Notifier :
+    <input type="checkbox" [(ngModel)]="threshold.notify" />
+  </label>
+  <button (click)="saveThreshold()">💾 Enregistrer</button>
+</div>
+

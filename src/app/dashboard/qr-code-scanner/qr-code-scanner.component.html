@@ -1,4 +1,8 @@
 <h2>Scanner le QR Code</h2>
-<zxing-scanner (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-<button class="cancel" (click)="cancel()">Annuler</button>
+<div class="scanner-container">
+  <zxing-scanner (scanSuccess)="onCodeResult($event)" (scanError)="onScanError()"></zxing-scanner>
+  <div class="scanner-frame" [ngClass]="{ 'success': scanSuccess, 'error': scanError }"></div>
+</div>
+<div *ngIf="scanError" class="error-message">Erreur : QR Code non détecté.</div>
+<div class="close-icon" (click)="cancel()">&#x2715;</div>
 

@@ -41,7 +41,7 @@ import {
     }
 
     async sendCommand(coopId: string, command: string): Promise<void> {
-      const commandRef = doc(this.firestore, `coops/${coopId}/commands`);
+      const commandRef = doc(this.firestore, `coops/${coopId}/commands/current`);
       await updateDoc(commandRef, { command, timestamp: serverTimestamp() });
     }
   

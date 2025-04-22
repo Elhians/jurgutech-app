@@ -1,5 +1,5 @@
 export interface Coop {
-    id?: string;
+    id: string;
     name: string;
     ownerId: string;
     accessCode: string;
@@ -7,4 +7,6 @@ export interface Coop {
     isRunning?: boolean; // Fixed typo
     authorizedUsers?: string[]; // Array of user IDs
     createdAt?: any; // Timestamp Firestore
+    lastCommandSent?: string;
+    lastCommandSentDate?: Date;
 }

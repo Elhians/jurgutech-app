@@ -28,9 +28,5 @@ export class AccessCodeModalComponent {
   cancel() {
     this.dialogRef.close(null);
   }
-
-  goBack() {
-    this.location.back(); // Navigate to the previous page
-  }
 }
 

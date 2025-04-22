@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { VideoModalComponent } from '../video-modal/video-modal.component'; // Adjust the path as needed
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view',
@@ -48,7 +49,8 @@ export class ViewComponent implements OnInit {
     private coopService: CoopService,
     private snackBar: MatSnackBar,
     private location: Location, // Inject Location service
-    private dialog: MatDialog // Inject MatDialog service
+    private dialog: MatDialog, // Inject MatDialog service
+    private router: Router // Inject Router service
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +58,14 @@ export class ViewComponent implements OnInit {
       const id = params.get('id');
       if (id) {
         this.coopId = id;
+        this.coopService.getCoopById(id).subscribe({
+          next: (coopData) => {
+            this.coop = coopData; // Ensure coop is updated
+          },
+          error: (err) => {
+            console.error('Error fetching coop data:', err);
+          }
+        });
         this.coopData$ = this.coopService.getLatestSensorData(id);
         this.coopData$.subscribe(data => this.coopData = data); // Resolve observable
       }
@@ -137,7 +147,7 @@ export class ViewComponent implements OnInit {
   }
 
   viewHumidityDetails() {
-    alert(`Détails de l'humidité : ${this.coop?.humidity}%`);
+    this.router.navigate([`/dashboard/coop/sensors/humidity-details`, { coopId: this.coopId }]);
   }
 
   async refillWater() {
@@ -157,21 +167,23 @@ export class ViewComponent implements OnInit {
   }
 
   viewTemperatureDetails() {
-    this.showSnackbar(`Détails de la température : ${this.coopData?.temperature} °C`);
+    this.router.navigate([`/dashboard/coop/sensors/temperature-details`, { coopId: this.coopId }]);
   }
 
   viewWaterDetails() {
-    this.showSnackbar(`Détails du niveau d'eau : ${this.coopData?.waterLevel} %`);
+    this.router.navigate([`/dashboard/coop/sensors/water-details`, { coopId: this.coopId }]);
   }
 
   viewFoodDetails() {
-    this.showSnackbar(`Détails du niveau de nourriture : ${this.coopData?.foodLevel} %`);
+    this.router.navigate([`/dashboard/coop/sensors/food-details`, { coopId: this.coopId }]);
   }
 
   viewCleanDetails() {
-    const lastCleaned = this.coopData?.lastCleaned?.toDate();
-    const formattedDate = lastCleaned ? lastCleaned.toLocaleString() : 'Non disponible';
-    this.showSnackbar(`Dernier nettoyage : ${formattedDate}`);
+    this.router.navigate([`/dashboard/coop/sensors/clean-details`, { coopId: this.coopId }]);
+  }
+
+  viewAmmoniaDetails() {
+    this.router.navigate([`/dashboard/coop/sensors/ammonia-details`, { coopId: this.coopId }]);
   }
 
   goBack() {

@@ -5,6 +5,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { VideoModalComponent } from './coop/video-modal/video-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
+
 @NgModule({
   declarations: [
   ],
@@ -13,7 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     DashboardRoutingModule,
     ZXingScannerModule,
     MatDialogModule,
-    VideoModalComponent
+    VideoModalComponent,
   ]
 })
 export class DashboardModule { }

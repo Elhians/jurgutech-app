@@ -1,4 +1,4 @@
-.page {
+.page{
   background-image: url('../../../../assets/coop-large-view-removebg-preview.png');
   background-size: cover;
   background-position: center;
@@ -419,4 +419,15 @@ button.stop {
   .sensor-grid {
     grid-template-columns: repeat(2, 1fr); /* Two cards per row on mobile */
   }
+}
+
+::ng-deep .mat-snack-bar-container {
+  background-color: #323232 !important; /* Dark background for better contrast */
+  color: #fff !important; /* White text for visibility */
+  font-size: 1.2rem !important; /* Slightly larger font size */
+  border-radius: 12px !important; /* More rounded corners */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important; /* Stronger shadow for depth */
+  padding: 1.5rem !important; /* Increased padding for better spacing */
+  text-align: center !important; /* Center-align the text */
+  z-index: 1500 !important; /* Ensure it appears above other elements */
 }

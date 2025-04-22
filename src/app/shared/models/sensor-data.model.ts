@@ -4,8 +4,9 @@ export interface SensorData {
     temperature: number;
     waterLevel: number;
     foodLevel: number;
+    ammonia: number;
     lastCleaned: Date;
     lastFed: Date;
     lastWatered: Date;
-    sensorCheckDate: Date;
+    time: any;
 }

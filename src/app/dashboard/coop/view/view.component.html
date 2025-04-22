@@ -76,7 +76,7 @@
                 <!-- Nourriture -->
                 <mat-card class="sensor-card food">
                   <mat-card-title>
-                    <span class="icon">🍗</span> Niveau de nourriture
+                    <span class="icon">🍗</span> Nourriture
                   </mat-card-title>
                   <mat-card-content>{{ coopData?.foodLevel }} 40%</mat-card-content>
                   <mat-card-actions>
@@ -94,6 +94,17 @@
                   <mat-card-actions>
                     <button class="return-button" (click)="viewCleanDetails()">Détails</button>
                     <button class="return-button" (click)="cleanCoop()">Nettoyer</button>
+                  </mat-card-actions>
+                </mat-card>
+
+                <!-- Ammoniac -->
+                <mat-card class="sensor-card gas">
+                  <mat-card-title>
+                    <span class="icon">🧪</span> Ammoniac
+                  </mat-card-title>
+                  <mat-card-content>{{ coopData?.ammonia }}15ppm</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewAmmoniaDetails()">Détails</button>
                   </mat-card-actions>
                 </mat-card>
               </div>

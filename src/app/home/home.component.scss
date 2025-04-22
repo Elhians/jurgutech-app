@@ -1,8 +1,9 @@
 .home-container {
-  background-image: url('https://plus.unsplash.com/premium_photo-1664527009217-7ab29b61bd3f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cG91bGFpbGxlcnxlbnwwfHwwfHx8MA%3D%3D');
+  background-image: url('../../assets/coop.jpg'); // Use a higher-quality image
   background-size: cover;
   background-position: center;
-  height: 100vh;
+  background-repeat: no-repeat; // Ensure no repetition
+  height: 90vh;
   color: #fff;
   display: flex;
   align-items: center;
