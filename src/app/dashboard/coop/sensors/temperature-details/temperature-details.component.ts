@@ -8,6 +8,8 @@ import { Threshold } from '../../../../shared/models/threshold.model';
 import { SensorData } from '../../../../shared/models/sensor-data.model';
 import { addDoc, Timestamp } from 'firebase/firestore';
 import { firstValueFrom } from 'rxjs';
+import { FanService } from '../../fan/fan.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-temperature-details',
@@ -17,7 +19,7 @@ import { firstValueFrom } from 'rxjs';
     BaseChartDirective
   ],
   templateUrl: './temperature-details.component.html',
-  styleUrl: './temperature-details.component.scss'
+  styleUrls: ['./temperature-details.component.scss']
 })
 export class TemperatureDetailsComponent implements OnInit {
   @Input() coopId!: string;
@@ -43,12 +45,13 @@ export class TemperatureDetailsComponent implements OnInit {
     notify: false
   };
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private fanService: FanService, private location: Location) {}
 
   async ngOnInit() {
     await this.loadTemperatureHistory();
     await this.loadThreshold();
     this.checkAutoActions();
+    this.monitorTemperature();
   }
 
   async loadTemperatureHistory() {
@@ -106,5 +109,25 @@ export class TemperatureDetailsComponent implements OnInit {
       message,
       timestamp: Timestamp.now()
     });
+  }
+
+  setFanState(isOn: boolean) {
+    this.fanService.setFanState(this.coopId, isOn).then(() => {
+      console.log(`Fan state set to: ${isOn ? 'ON' : 'OFF'}`);
+    });
+  }
+
+  monitorTemperature() {
+    setInterval(() => {
+      if (this.currentTemp! <= this.threshold.min) {
+        this.setFanState(false);
+      } else if (this.currentTemp! >= this.threshold.max) {
+        this.setFanState(true);
+      }
+    }, 1000); // Check every second
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

@@ -3,10 +3,8 @@ export interface Coop {
     name: string;
     ownerId: string;
     accessCode: string;
+    shareCode: string;
     qrUsed?: boolean;
     isRunning?: boolean; // Fixed typo
-    authorizedUsers?: string[]; // Array of user IDs
     createdAt?: any; // Timestamp Firestore
-    lastCommandSent?: string;
-    lastCommandSentDate?: Date;
 }

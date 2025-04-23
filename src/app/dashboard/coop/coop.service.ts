@@ -38,9 +38,9 @@ export class CoopService {
     if (!coopData.ownerId) {
       // Assign the current user as the owner and admin
       await updateDoc(coopRef, {
-        ownerId: user.uid,
+        //ownerId: user.uid,
         authorizedUsers: arrayUnion(user.uid),
-        qrUsed: true
+        qrUsed: false // Initialize qrUsed to false
       });
     } else {
       // If the user is not authorized, throw an error
@@ -50,7 +50,7 @@ export class CoopService {
 
       // Update the coop to mark the QR code as used
       await updateDoc(coopRef, {
-        qrUsed: true
+        qrUsed: false
       });
     }
   }

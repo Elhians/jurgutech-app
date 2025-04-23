@@ -3,12 +3,47 @@
   background-color: #f9f9f9;
   color: #333;
   font-family: 'Arial', sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   h3 {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #2c3e50;
     margin-bottom: 1.5rem;
+    font-weight: bold;
+  }
+
+  .return-button {
+    background-color: #ffcf00;
+    color: #232526;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: #ffc107;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  canvas {
+    display: block;
+    margin: 0 auto 2rem auto;
+    max-width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   .chart-container {
@@ -21,14 +56,18 @@
 
   .threshold-config {
     background: #fff;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
 
     h4 {
       font-size: 1.2rem;
       color: #2c3e50;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      font-weight: bold;
     }
 
     .threshold-inputs {
@@ -53,6 +92,47 @@
         input[type="checkbox"] {
           margin-top: 0.5rem;
         }
+      }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+
+      input[type="number"],
+      input[type="checkbox"] {
+        margin-top: 0.3rem;
+        padding: 0.4rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+
+    button {
+      display: block;
+      margin: 0.5rem auto 0 auto;
+      padding: 0.4rem 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+
+      &:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
 

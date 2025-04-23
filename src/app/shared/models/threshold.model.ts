@@ -4,6 +4,6 @@ export interface Threshold {
     type: 'temperature' | 'humidity' | 'waterLevel' | 'foodLevel' | 'ammonia';
     min: number;
     max: number;
-    commandToSend: string;
     notify: boolean;
+    commandToSend?: string; // commande à envoyer si la condition est remplie
 }  
