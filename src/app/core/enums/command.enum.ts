@@ -1,0 +1,11 @@
+export enum CommandType{
+    START = 'START',
+    STOP = 'STOP',
+    STARTFAN = 'STARTFAN',
+    STOPFAN = 'STOPFAN',
+    LIGHTON = 'LIGHTON',
+    LIGHTOFF = 'LIGHTOFF',
+    CLEAN = 'CLEAN',
+    FILLWATER = 'FILLWATER',
+    FILLFOOD = 'FILLFOOD',
+}

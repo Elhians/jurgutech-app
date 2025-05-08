@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FirestoreService } from '../../firestore/firestore.service';
-import { AuthService } from '../../auth/auth.service';
+import { FirestoreService } from '../../../firestore/firestore.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({

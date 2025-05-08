@@ -1,6 +1,6 @@
 import { Component, input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CoopService } from '../coop.service';
+import { CoopService } from '../../../../core/services/coop.service';
 import { CommonModule } from '@angular/common';
 import { Firestore, doc, docData, updateDoc, collection, addDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import { VideoModalComponent } from '../video-modal/video-modal.component'; // Adjust the path as needed
+import { VideoModalComponent } from '../../../video-modal/video-modal.component'; // Adjust the path as needed
 import { Router } from '@angular/router';
 
 @Component({

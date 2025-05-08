@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CoopService } from '../coop.service';
+import { CoopService } from '../../../../core/services/coop.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

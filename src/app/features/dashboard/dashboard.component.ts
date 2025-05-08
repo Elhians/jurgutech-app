@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import{ CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../auth/auth.service';
-import { CoopService } from './coop/coop.service';
-import { Coop } from '../shared/models/coop.model';
+import { AuthService } from '../../core/services/auth.service';
+import { CoopService } from '../../core/services/coop.service';
+import { Coop } from '../../core/models/coop.model';
 import { Router } from '@angular/router';
-import { User } from '../shared/models/user.model';
+import { User } from '../../core/models/user.model';
 import { MatDialog } from '@angular/material/dialog';
-import { QRCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
-import { AccessCodeModalComponent } from './acces-code-modal/acces-code-modal.component';
+import { QRCodeScannerComponent } from '../qr-code-scanner/qr-code-scanner.component';
+import { AccessCodeModalComponent } from '../acces-code-modal/acces-code-modal.component';
 
 
 @Component({

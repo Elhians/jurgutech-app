@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FanService } from './fan.service';
+import { CoopService } from '../../core/services/coop.service';
 
-describe('FanService', () => {
-  let service: FanService;
+describe('CoopService', () => {
+  let service: CoopService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FanService);
+    service = TestBed.inject(CoopService);
   });
 
   it('should be created', () => {
