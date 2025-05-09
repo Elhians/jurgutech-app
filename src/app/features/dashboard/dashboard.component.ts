@@ -38,11 +38,16 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     this.authService.user$.subscribe(user => {
       this.user = user ? {
         uid: user.uid,
         email: user.email || '',
-        displayName: user.displayName || ''
+        displayName: user.displayName || '',
+        prenom: user.prenom || '',
+        nom: user.nom || '',
+        password: user.password || '',
+        tel: user.tel || '',
       } : null;
       if (user?.uid) {
         this.coopService.getUserCoops(user.uid).subscribe({

@@ -1,0 +1,92 @@
+users (collection)
+  └── {userId} (document)
+      email: string
+      firstName: string
+      lastName: string
+      tel: string
+      createdAt: timestamp
+
+coops (collection)
+  └── {coopId} (document)
+      name: string
+      ownerId: string
+      accessCode: string
+      shareCode: string
+      qrUsed: boolean
+      isRunning: boolean
+      haveBattery: boolean
+      haveCleanSys: boolean
+      createdAt: timestamp
+
+      authorisations (subcollection)
+        └── {userId} (document)
+            role: "ADMIN" | "EMPLOYEE" | "GUEST"
+            assignedAt: timestamp
+
+      fan (subcollection)
+        └── current (document)
+            isOn: boolean
+            lastChanged: timestamp
+
+      thermometer (subcollection)
+        └── current (document)
+            temperature: number
+            lastChanged: timestamp
+            min: number
+            max:number
+
+      humiditySensor (subcollection)
+        └── current (document)
+            humidity: number
+            max: number
+            lastChanged: timestamp
+
+      foodReservoir (subcollection)
+        └── current (document)
+            level: number
+            min: number
+            isUsingThreshold: boolean
+            lastFilled: timestamp
+
+      waterReservoir (subcollection)
+        └── current (document)
+            level: number
+            min: number
+            lastFilled: timestamp
+
+      externalTanks (subcollection)
+        └── current (document)
+            level: number
+            capacity: number
+            
+      externalTanks (subcollection)
+        └── current (document)
+            level: number
+            capacity: number
+
+      battery (subcollection)
+        └── current (document)
+            level: number
+
+      cleaningSystem (subcollection)
+        └── current (document)
+            lastCleaned: timestamp
+
+      feedMoments (subcollection)
+        └── {momentId} (document)
+            mealTime: timestamp
+
+      notifications (subcollection)
+        └── {notifId} (document)
+            message: string
+            type: "info" | "warning" | "critical"
+            createdAt: timestamp
+           
+
+      commands (subcollection)
+        └── {commandId} (document)
+            command: string  # EnumCommand
+            status: "PENDING" | "SUCCESS" | "FAILED"
+            userId: string
+            sentAt: timestamp
+
