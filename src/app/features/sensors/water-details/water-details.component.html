@@ -1,1 +1,46 @@
-<p>water-details works!</p>
+<div class="page-container">
+  <div class="header">
+    <button class="return-button" (click)="goBack()">⬅ Retour</button>
+    <h2 class="title">Gestion de l'eau</h2>
+  </div>
+
+  <div class="current-status">
+    <div class="status-card">
+      <div class="status-icon">🚰</div>
+      <div class="status-info">
+        <h3>Niveau d'eau actuel</h3>
+        <div class="level-display">
+          <span class="level-value">{{ currentLevel }}%</span>
+          <span class="status-badge" [class]="currentLevel && currentLevel < waterTrough.min ? 'warning' : 'normal'">
+            {{ currentLevel && currentLevel < waterTrough.min ? 'BAS' : 'NORMAL' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h3>Historique des niveaux</h3>
+    <canvas baseChart
+      [data]="waterChartData"
+      [options]="{ responsive: true }"
+      [type]="'line'">
+    </canvas>
+  </div>
+
+  <div class="config-section">
+    <div class="config-card">
+      <h3>Configuration de l'abreuvoir</h3>
+      <div class="config-inputs">
+        <div class="input-group">
+          <label>Niveau minimum (%)</label>
+          <input type="number" [(ngModel)]="waterTrough.min" min="0" max="100" class="number-input" />
+        </div>
+      </div>
+      <button class="save-button" (click)="saveWaterTrough()">
+        <span class="icon">💾</span>
+        Enregistrer
+      </button>
+    </div>
+  </div>
+</div>

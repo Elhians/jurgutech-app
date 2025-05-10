@@ -1,28 +1,50 @@
 <div class="page-container">
-  <button class="return-button" (click)="goBack()">⬅ Retour</button>
+  <div class="header">
+    <button class="return-button" (click)="goBack()">⬅ Retour</button>
+    <h2 class="title">Gestion de la température</h2>
+  </div>
 
-  <h3>Température actuelle : {{ currentTemp }} °C</h3>
+  <div class="current-status">
+    <div class="status-card">
+      <div class="status-icon">🌡️</div>
+      <div class="status-info">
+        <h3>Température actuelle</h3>
+        <div class="temperature-display">
+          <span class="temperature-value">{{ currentTemp }}°C</span>
+          <span class="status-badge" [class]="currentTemp && (currentTemp < thermometer.min || currentTemp > thermometer.max) ? 'warning' : 'normal'">
+            {{ currentTemp && (currentTemp < thermometer.min || currentTemp > thermometer.max) ? 'ANORMALE' : 'NORMALE' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <canvas baseChart
-    [data]="temperatureChartData"
-    [options]="{ responsive: true }"
-    [type]="'line'">
-  </canvas>
+  <div class="chart-container">
+    <h3>Historique des températures</h3>
+    <canvas baseChart
+      [data]="temperatureChartData"
+      [options]="{ responsive: true }"
+      [type]="'line'">
+    </canvas>
+  </div>
 
-  <div class="threshold-config">
-    <h4>Définir les seuils</h4>
-    <label>
-      Min :
-      <input type="number" [(ngModel)]="threshold.min" />
-    </label>
-    <label>
-      Max :
-      <input type="number" [(ngModel)]="threshold.max" />
-    </label>
-    <label>
-      Notifier :
-      <input type="checkbox" [(ngModel)]="threshold.notify" />
-    </label>
-    <button (click)="saveThreshold()">💾 Enregistrer</button>
+  <div class="config-section">
+    <div class="config-card">
+      <h3>Configuration du thermomètre</h3>
+      <div class="config-inputs">
+        <div class="input-group">
+          <label>Température minimale (°C)</label>
+          <input type="number" [(ngModel)]="thermometer.min" min="0" max="50" class="number-input" />
+        </div>
+        <div class="input-group">
+          <label>Température maximale (°C)</label>
+          <input type="number" [(ngModel)]="thermometer.max" min="0" max="50" class="number-input" />
+        </div>
+      </div>
+      <button class="save-button" (click)="saveThermometer()">
+        <span class="icon">💾</span>
+        Enregistrer
+      </button>
+    </div>
   </div>
 </div>

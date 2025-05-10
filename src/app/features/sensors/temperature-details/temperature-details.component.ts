@@ -3,16 +3,19 @@ import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Firestore, collection, query, orderBy, getDocs, docData, doc, updateDoc, setDoc } from '@angular/fire/firestore';
-import { Threshold } from '../../../../core/models/threshold.model';
-import { SensorData } from '../../../../core/models/sensor-data.model';
+import { Firestore, collection, query, orderBy, getDocs, docData, doc, setDoc } from '@angular/fire/firestore';
 import { addDoc, Timestamp } from 'firebase/firestore';
 import { firstValueFrom } from 'rxjs';
-import { FanService } from '../../fan/fan.service';
 import { Location } from '@angular/common';
+import { CommandType } from '../../../core/enums/command.enum';
+import { NotificationType } from '../../../core/enums/notification-type.enum';
+import { Command } from '../../../core/models/user-coop-command';
+import { Notification } from '../../../core/models/notification.model';
+import { Thermometer } from '../../../core/models/coop.model';
 
 @Component({
   selector: 'app-temperature-details',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -37,27 +40,25 @@ export class TemperatureDetailsComponent implements OnInit {
   };
 
   currentTemp?: number;
-  threshold: Threshold = {
-    type: 'temperature',
-    min: 0,
-    max: 100,
-    commandToSend: '',
-    notify: false
+  thermometer: Thermometer = {
+    temperature: 0,
+    min: 15,
+    max: 28,
+    lastChanged: Timestamp.now()
   };
 
-  constructor(private firestore: Firestore, private fanService: FanService, private location: Location) {}
+  constructor(private firestore: Firestore, private location: Location) {}
 
   async ngOnInit() {
     await this.loadTemperatureHistory();
-    await this.loadThreshold();
+    await this.loadThermometer();
     this.checkAutoActions();
-    this.monitorTemperature();
   }
 
   async loadTemperatureHistory() {
     const q = query(
-      collection(this.firestore, `coops/${this.coopId}/sensorData`),
-      orderBy('time')
+      collection(this.firestore, `coops/${this.coopId}/thermometer`),
+      orderBy('lastChanged')
     );
     const snap = await getDocs(q);
 
@@ -65,8 +66,8 @@ export class TemperatureDetailsComponent implements OnInit {
     const values: number[] = [];
 
     snap.forEach(doc => {
-      const data = doc.data() as SensorData;
-      labels.push(data.time?.toDate().toLocaleString());
+      const data = doc.data() as Thermometer;
+      labels.push(data.lastChanged.toDate().toLocaleString());
       values.push(data.temperature);
     });
 
@@ -75,56 +76,52 @@ export class TemperatureDetailsComponent implements OnInit {
     this.temperatureChartData.datasets[0].data = values;
   }
 
-  async loadThreshold() {
-    const ref = doc(this.firestore, `coops/${this.coopId}/thresholds/temperature`);
+  async loadThermometer() {
+    const ref = doc(this.firestore, `coops/${this.coopId}/thermometer/current`);
     const snapshot = await firstValueFrom(docData(ref));
-    if (snapshot) this.threshold = snapshot as Threshold;
+    if (snapshot) this.thermometer = snapshot as Thermometer;
   }
 
-  async saveThreshold() {
-    const ref = doc(this.firestore, `coops/${this.coopId}/thresholds/temperature`);
-    await setDoc(ref, { ...this.threshold });
+  async saveThermometer() {
+    const ref = doc(this.firestore, `coops/${this.coopId}/thermometer/current`);
+    await setDoc(ref, { 
+      ...this.thermometer,
+      lastChanged: Timestamp.now()
+    });
   }
 
   async checkAutoActions() {
-    if (!this.currentTemp || !this.threshold) return;
+    if (!this.currentTemp) return;
 
-    if (this.currentTemp < this.threshold.min || this.currentTemp > this.threshold.max) {
-      if (this.threshold.notify) {
-        await this.sendNotification(`🚨 Température anormale détectée : ${this.currentTemp}°C`);
-      }
-      if (this.threshold.commandToSend) {
-        const cmdRef = doc(this.firestore, `coops/${this.coopId}/commands/current`);
-        await setDoc(cmdRef, {
-          type: this.threshold.commandToSend,
-          timestamp: Timestamp.now()
-        });
-      }
+    if (this.currentTemp < this.thermometer.min || this.currentTemp > this.thermometer.max) {
+      await this.sendNotification(
+        `Température anormale: ${this.currentTemp}°C`,
+        NotificationType.WARNING
+      );
+
+      const command = new Command({
+        command: this.currentTemp > this.thermometer.max ? CommandType.STARTFAN : CommandType.STOPFAN,
+        coopId: this.coopId,
+        userId: 'system',
+        sentAt: Timestamp.now()
+      });
+
+      const cmdRef = doc(this.firestore, `coops/${this.coopId}/commands/${command.id}`);
+      await setDoc(cmdRef, command);
     }
   }
 
-  async sendNotification(message: string) {
-    const ref = collection(this.firestore, `coops/${this.coopId}/notifications`);
-    await addDoc(ref, {
+  async sendNotification(message: string, type: NotificationType) {
+    const notification: Notification = {
       message,
-      timestamp: Timestamp.now()
-    });
-  }
+      type,
+      createdAt: Timestamp.now(),
+      isRead: false,
+      coopId: this.coopId
+    };
 
-  setFanState(isOn: boolean) {
-    this.fanService.setFanState(this.coopId, isOn).then(() => {
-      console.log(`Fan state set to: ${isOn ? 'ON' : 'OFF'}`);
-    });
-  }
-
-  monitorTemperature() {
-    setInterval(() => {
-      if (this.currentTemp! <= this.threshold.min) {
-        this.setFanState(false);
-      } else if (this.currentTemp! >= this.threshold.max) {
-        this.setFanState(true);
-      }
-    }, 1000); // Check every second
+    const ref = collection(this.firestore, `coops/${this.coopId}/notifications`);
+    await addDoc(ref, notification);
   }
 
   goBack() {

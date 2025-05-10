@@ -2,20 +2,19 @@
     <div class="coop-view">
         <button class="return-button" (click)="goBack()">⬅ Retour</button>
         <h2 class="coop-title">
-            {{ coop?.name }}
+            {{ coop.name }}
             <span
               class="badge"
-              [ngClass]="{ 'running': coop?.isRunning, 'stopped': !coop?.isRunning }"
+              [ngClass]="{ 'running': coop.isRunning, 'stopped': !coop.isRunning }"
             >
-              {{ coop?.isRunning ? '🟢 En marche' : '🔴 À l’arrêt' }}
+              {{ coop.isRunning ? `🟢 En marche` : `🔴 À l'arrêt` }}
             </span>
         </h2>
           
-      
         <!-- Commandes -->
         <div class="coop-commands">
             <button
-              *ngIf="!coop?.isRunning"
+              *ngIf="!coop.isRunning"
               mat-raised-button
               class="start"
               (click)="startSystem()"
@@ -24,16 +23,15 @@
             </button>
           
             <button
-              *ngIf="coop?.isRunning"
+              *ngIf="coop.isRunning"
               mat-raised-button
               class="stop"
               (click)="stopSystem()"
             >
               ⛔ Éteindre le système
             </button>
-          </div>
-          
-      
+        </div>
+
         <!-- Cartes capteurs -->
         <div class="sensor-grid">
             <div class="sensor-cards">
@@ -42,10 +40,13 @@
                   <mat-card-title>
                     <span class="icon">🌡️</span> Température
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.temperature }} 27°C</mat-card-content>
+                  <mat-card-content>{{ coop.thermometer.temperature }}°C</mat-card-content>
                   <mat-card-actions>
                     <button class="return-button" (click)="viewTemperatureDetails()">Détails</button>
-                    <button class="return-button" (click)="changeTemperature()">Changer</button>
+                    <button class="fan-toggle" [ngClass]="{'fan-on': coop.fan.isOn, 'fan-off': !coop.fan.isOn}" (click)="toggleVent()">
+                      <span class="fan-icon">{{ coop.fan.isOn ? '💨' : '💨' }}</span>
+                      {{ coop.fan.isOn ? 'ON' : 'OFF' }}
+                    </button>
                   </mat-card-actions>
                 </mat-card>
             
@@ -54,10 +55,13 @@
                   <mat-card-title>
                     <span class="icon">💧</span> Humidité
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.humidity }} 15 %</mat-card-content>
+                  <mat-card-content>{{ coop.humiditySensor.humidity }}%</mat-card-content>
                   <mat-card-actions>
                     <button class="return-button" (click)="viewHumidityDetails()">Détails</button>
-                    <button class="return-button" (click)="toggleVent()">Ventilo {{ coop?.isRunning ? 'OFF' : 'ON' }}</button>
+                    <button class="fan-toggle" [ngClass]="{'fan-on': coop.fan.isOn, 'fan-off': !coop.fan.isOn}" (click)="toggleVent()">
+                      <span class="fan-icon">{{ coop.fan.isOn ? '💨' : '💨' }}</span>
+                      {{ coop.fan.isOn ? 'ON' : 'OFF' }}
+                    </button>
                   </mat-card-actions>
                 </mat-card>
             
@@ -66,7 +70,7 @@
                   <mat-card-title>
                     <span class="icon">🚰</span> Niveau d'eau
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.waterLevel }} 30%</mat-card-content>
+                  <mat-card-content>{{ coop.waterTrough.level }}%</mat-card-content>
                   <mat-card-actions>
                     <button class="return-button" (click)="viewWaterDetails()">Détails</button>
                     <button class="return-button" (click)="refillWater()">Remplir</button>
@@ -78,22 +82,32 @@
                   <mat-card-title>
                     <span class="icon">🍗</span> Nourriture
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.foodLevel }} 40%</mat-card-content>
+                  <mat-card-content>{{ coop.feeder.level }}%</mat-card-content>
                   <mat-card-actions>
                     <button class="return-button" (click)="viewFoodDetails()">Détails</button>
                     <button class="return-button" (click)="refillFood()">Remplir</button>
                   </mat-card-actions>
                 </mat-card>
             
-                <!-- Nettoyage -->
-                <mat-card class="sensor-card clean">
+                <!-- Nettoyage - Conditionnellement affiché -->
+                <mat-card class="sensor-card clean" *ngIf="coop.haveCleanSys">
                   <mat-card-title>
                     <span class="icon">🧹</span> Dernier nettoyage
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.lastCleaned?.toDate() | date:'short' }} 12/02/2025</mat-card-content>
+                  <mat-card-content>{{ coop.cleaningSystem?.lastCleaned?.toDate() | date:'short' }}</mat-card-content>
                   <mat-card-actions>
-                    <button class="return-button" (click)="viewCleanDetails()">Détails</button>
                     <button class="return-button" (click)="cleanCoop()">Nettoyer</button>
+                  </mat-card-actions>
+                </mat-card>
+
+                <!-- Batterie - Conditionnellement affichée -->
+                <mat-card class="sensor-card battery" *ngIf="coop.haveBattery">
+                  <mat-card-title>
+                    <span class="icon">🔋</span> Batterie
+                  </mat-card-title>
+                  <mat-card-content>{{ coop.battery?.level }}%</mat-card-content>
+                  <mat-card-actions>
+                    <button class="return-button" (click)="viewBatteryDetails()">Détails</button>
                   </mat-card-actions>
                 </mat-card>
 
@@ -102,27 +116,33 @@
                   <mat-card-title>
                     <span class="icon">🧪</span> Ammoniac
                   </mat-card-title>
-                  <mat-card-content>{{ coopData?.ammonia }}15ppm</mat-card-content>
+                  <mat-card-content>{{ coop.ammoniaSensor.ammonia }}ppm</mat-card-content>
+                  
                   <mat-card-actions>
                     <button class="return-button" (click)="viewAmmoniaDetails()">Détails</button>
+                    <button class="fan-toggle" [ngClass]="{'fan-on': coop.fan.isOn, 'fan-off': !coop.fan.isOn}" (click)="toggleVent()">
+                      <span class="fan-icon">{{ coop.fan.isOn ? '💨' : '💨' }}</span>
+                      {{ coop.fan.isOn ? 'ON' : 'OFF' }}
+                    </button>
                   </mat-card-actions>
                 </mat-card>
               </div>
-      </div>
+        </div>
 
-      <!-- Real-time Video Sections -->
-      <div class="video-grid">
-          <div class="video-section" *ngFor="let camera of cameras; let i = index">
-              <h3>Caméra {{ i + 1 }}</h3>
-              <button class="return-button" (click)="openVideoModal(camera.streamUrl)">Agrandir</button>
-              <video 
-                  [src]="camera.streamUrl" 
-                  autoplay 
-                  muted 
-                  controls>
-              </video>
+        <!-- Caméras -->
+        <div class="cameras-section" *ngIf="cameras.length > 0">
+          <h3 class="section-title">Caméras</h3>
+          <div class="cameras-grid">
+            <div class="camera-card" *ngFor="let camera of cameras" (click)="openCamera(camera)">
+              <div class="camera-preview">
+                <span class="camera-icon">📹</span>
+                <span class="camera-location">{{ camera.location }}</span>
+              </div>
+              <button class="view-button">Voir le flux</button>
+            </div>
           </div>
-      </div>
+        </div>
+    </div>
 </div>
 
 

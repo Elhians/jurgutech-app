@@ -1,29 +1,47 @@
 import { Role } from '../enums/role.enum';
+import { Timestamp } from 'firebase/firestore';
 
 export interface Fan {
   isOn: boolean;
-  lastChanged: Date;
+  lastChanged: Timestamp;
 }
 
 export interface HumiditySensor {
   humidity: number;
-  lastChanged: Date;
+  max: number;
+  lastChanged: Timestamp;
+}
+
+export interface Camera {
+  id: string;
+  location: string;
+  streamUrl: string;
+}
+
+export interface AmmoniaSensor {
+  ammonia: number;
+  max: number;
+  lastChanged: Timestamp;
 }
 
 export interface Thermometer {
   temperature: number;
-  unit: string;
-  lastChanged: Date;
+  lastChanged: Timestamp;
+  min: number;
+  max: number;
 }
 
 export interface WaterTrough {
   level: number;
-  lastFilled: Date;
+  min: number;
+  lastFilled: Timestamp;
 }
 
 export interface Feeder {
   level: number;
-  lastFilled: Date;
+  min: number;
+  isUsingThreshold: boolean;
+  lastFilled: Timestamp;
 }
 
 export interface Light {
@@ -36,7 +54,8 @@ export interface Battery {
 }
 
 export interface CleaningSystem {
-  lastCleaned: Date;
+  lastCleaned: Timestamp;
+  intervalDay: number;  // Added to match Firestore structure
 }
 
 export interface FoodReserve {
@@ -51,31 +70,10 @@ export interface WaterReserve {
   unit: string;
 }
 
-export interface HumidityThreshold {
-  max: number;
-}
-
-export interface TemperatureThreshold {
-  min: number;
-  max: number;
-}
-
-export interface FoodThreshold {
-  isUsed: boolean;
-  min: number;
-}
-
-export interface WaterThreshold {
-  min: number;
-}
-
-export interface CleanThreshold {
-  intervalDays: number;
-}
-
 export interface FeedMoment {
-  isUsed: boolean;
-  mealTime: Date;
+  id: string;
+  mealTime: any;
+  enabled: boolean;
 }
 
 export class Coop {
@@ -90,8 +88,8 @@ export class Coop {
   qrUsed: boolean;
   shareCode: string;
   isRunning: boolean;
-  hasBattery: boolean;
-  hasCleanSys: boolean;
+  haveBattery: boolean;
+  haveCleanSys: boolean;
   
   // Sensors and components
   fan: Fan;
@@ -100,6 +98,7 @@ export class Coop {
   waterTrough: WaterTrough;
   feeder: Feeder;
   light: Light;
+  ammoniaSensor: AmmoniaSensor;
   
   // Optional components
   battery?: Battery;
@@ -108,13 +107,6 @@ export class Coop {
   // Reserves
   foodReserve: FoodReserve;
   waterReserve: WaterReserve;
-  
-  // Thresholds
-  humidityThreshold: HumidityThreshold;
-  temperatureThreshold: TemperatureThreshold;
-  foodThreshold: FoodThreshold;
-  waterThreshold: WaterThreshold;
-  cleanThreshold: CleanThreshold;
   
   // Feed scheduling
   feedMoments: FeedMoment[];
@@ -131,36 +123,48 @@ export class Coop {
     this.qrUsed = data.qrUsed || false;
     this.shareCode = data.shareCode || '';
     this.isRunning = data.isRunning || false;
-    this.hasBattery = data.hasBattery || false;
-    this.hasCleanSys = data.hasCleanSys || false;
+    this.haveBattery = data.haveBattery || false;
+    this.haveCleanSys = data.haveCleanSys || false;
     
     // Sensors and components
-    this.fan = data.fan || { isOn: false, lastChanged: new Date() };
-    this.humiditySensor = data.humiditySensor || { humidity: 0, lastChanged: new Date() };
-    this.thermometer = data.thermometer || { temperature: 0, unit: 'C', lastChanged: new Date() };
-    this.waterTrough = data.waterTrough || { level: 0, lastFilled: new Date() };
-    this.feeder = data.feeder || { level: 0, lastFilled: new Date() };
+    this.fan = data.fan || { isOn: false, lastChanged: Timestamp.now() };
+    this.humiditySensor = data.humiditySensor || { 
+      humidity: 0, 
+      max: 80,
+      lastChanged: Timestamp.now() 
+    };
+    this.thermometer = data.thermometer || { 
+      temperature: 0,
+      min: 18,
+      max: 24, 
+      lastChanged: Timestamp.now() 
+    };
+    this.waterTrough = data.waterTrough || { level: 0, min: 20, lastFilled: Timestamp.now() };
+    this.feeder = data.feeder || { level: 0, min: 20, isUsingThreshold: false, lastFilled: Timestamp.now() };
     this.light = data.light || { isOn: false, intensity: 0 };
+    this.ammoniaSensor = data.ammoniaSensor || {
+      ammonia: 0,
+      max: 25,
+      lastChanged: Timestamp.now()
+    };
     
     // Optional components based on coop configuration
-    if (this.hasBattery) {
-      this.battery = data.battery || { level: 100 };
+    if (this.haveBattery) {
+      this.battery = data.battery || { 
+        level: 100
+      };
     }
     
-    if (this.hasCleanSys) {
-      this.cleaningSystem = data.cleaningSystem || { lastCleaned: new Date() };
+    if (this.haveCleanSys) {
+      this.cleaningSystem = data.cleaningSystem || { 
+        lastCleaned: Timestamp.now(),
+        intervalDay: 7
+      };
     }
     
     // Reserves
     this.foodReserve = data.foodReserve || { currentLevel: 0, capacity: 100, unit: 'g' };
     this.waterReserve = data.waterReserve || { currentLevel: 0, capacity: 1000, unit: 'ml' };
-    
-    // Thresholds
-    this.humidityThreshold = data.humidityThreshold || { max: 70 };
-    this.temperatureThreshold = data.temperatureThreshold || { min: 15, max: 28 };
-    this.foodThreshold = data.foodThreshold || { isUsed: false, min: 20 };
-    this.waterThreshold = data.waterThreshold || { min: 20 };
-    this.cleanThreshold = data.cleanThreshold || { intervalDays: 7 };
     
     // Feed scheduling
     this.feedMoments = data.feedMoments || [];
@@ -177,31 +181,50 @@ export class Coop {
   }
   
   needsWaterRefill(): boolean {
-    return this.waterTrough.level < this.waterThreshold.min;
+    return this.waterTrough.level < this.waterTrough.min;
   }
   
   needsFoodRefill(): boolean {
-    return this.foodThreshold.isUsed && this.feeder.level < this.foodThreshold.min;
+    return this.feeder.isUsingThreshold && this.feeder.level < this.feeder.min;
   }
   
   isTemperatureOutOfRange(): boolean {
-    return this.thermometer.temperature < this.temperatureThreshold.min || 
-           this.thermometer.temperature > this.temperatureThreshold.max;
+    return this.thermometer.temperature < this.thermometer.min || 
+            this.thermometer.temperature > this.thermometer.max;
   }
   
   isHumidityTooHigh(): boolean {
-    return this.humiditySensor.humidity > this.humidityThreshold.max;
+    return this.humiditySensor.humidity > this.humiditySensor.max;
   }
   
   needsCleaning(): boolean {
-    if (!this.hasCleanSys || !this.cleaningSystem) return false;
+    if (!this.haveCleanSys || !this.cleaningSystem) return false;
     
+    const lastCleaned = this.cleaningSystem.lastCleaned.toDate();
     const now = new Date();
-    const lastCleaned = new Date(this.cleaningSystem.lastCleaned);
-    const diffTime = Math.abs(now.getTime() - lastCleaned.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((now.getTime() - lastCleaned.getTime()) / (1000 * 60 * 60 * 24));
     
-    return diffDays >= this.cleanThreshold.intervalDays;
+    return diffDays >= this.cleaningSystem.intervalDay;  // Use intervalDay from cleaningSystem
+  }
+
+  isBatteryLow(): boolean {
+    if (!this.haveBattery || !this.battery) return false;
+    return this.battery.level < 20;
+  }
+
+  isBatteryCritical(): boolean {
+    if (!this.haveBattery || !this.battery) return false;
+    return this.battery.level < 10;
+  }
+
+  shouldStartCleaning(): boolean {
+    if (!this.haveCleanSys || !this.cleaningSystem) return false;
+    
+    const lastCleaned = this.cleaningSystem.lastCleaned.toDate();
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - lastCleaned.getTime()) / (1000 * 60 * 60 * 24));
+    
+    return diffDays >= this.cleaningSystem.intervalDay;
   }
 }
 

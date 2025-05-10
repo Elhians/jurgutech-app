@@ -1,6 +1,6 @@
 <div class="dashboard-container">
     <button class="return-button" (click)="goBack()">⬅ Retour</button>
-    <h2>Bienvenue {{ user?.displayName || user?.email }} 👋</h2>
+    <h2>Bienvenue {{ user?.fullName || user?.email }} 👋</h2>
   
     <div class="action-bar">
       <button class="btn" (click)="addCoopWithQR()">📷 Ajouter avec QR Code</button>
@@ -23,7 +23,7 @@
       <div class="coop-card" *ngFor="let coop of coops" (click)="coop.id && goToCoop(coop.id)">
         <h3>{{ coop.name }}</h3>
         <p><strong>Code :</strong> {{ coop.accessCode }}</p>
-        <p><strong>Ajouté :</strong> {{ coop.createdAt?.toDate() | date:'short' }}</p>
+        <p><strong>Ajouté :</strong> {{ coop.createdAt | date:'short' }}</p>
       </div>
     </div>
   </div>

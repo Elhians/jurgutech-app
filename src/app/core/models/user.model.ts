@@ -1,21 +1,21 @@
 export class User {
-    prenom: string;
-    nom: string;
-    displayName?: string;
-    password: string;
     uid: string;
     email: string;
+    firstName: string;
+    lastName: string;
     tel: string;
+    createdAt: Date;
+
     constructor(data: Partial<User> = {}) {
-        this.prenom = data.prenom || '';
-        this.nom = data.nom || '';
-        this.password = data.password || '';
         this.uid = data.uid || '';
         this.email = data.email || '';
+        this.firstName = data.firstName || '';
+        this.lastName = data.lastName || '';
         this.tel = data.tel || '';
+        this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
     }
 
     get fullName(): string {
-        return `${this.prenom} ${this.nom}`;
+        return `${this.firstName} ${this.lastName}`;
     }
 }

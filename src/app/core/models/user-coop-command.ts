@@ -1,19 +1,22 @@
 import { CommandType } from '../enums/command.enum';
 import { Status } from '../enums/status.enum';
+import { Timestamp } from 'firebase/firestore';
 
 export class Command {
+  id?: string;
   command: CommandType;
   status: Status;
-  sentDate: Date;
-  coopId: string;
   userId: string;
+  coopId: string;
+  sentAt: Timestamp;
 
   constructor(data: Partial<Command> = {}) {
+    this.id = data.id;
     this.command = data.command || CommandType.START;
     this.status = data.status || Status.PENDING;
-    this.sentDate = data.sentDate ? new Date(data.sentDate) : new Date();
-    this.coopId = data.coopId || '';
     this.userId = data.userId || '';
+    this.coopId = data.coopId || '';
+    this.sentAt = data.sentAt || Timestamp.now();
   }
   
   isCompleted(): boolean {

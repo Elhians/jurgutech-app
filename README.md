@@ -141,6 +141,11 @@ coops (collection)
         └── current (document)
             isOn: boolean
             lastChanged: timestamp
+      
+      camera (subcollection)
+        └── {cameraId} (document)
+            location: String
+            streamUrl: timestamp
 
       thermometer (subcollection)
         └── current (document)
@@ -155,25 +160,31 @@ coops (collection)
             max: number
             lastChanged: timestamp
 
-      foodReservoir (subcollection)
+      ammoniaSensor (subcollection)
+        └── current (document)
+            ammonia: number
+            max: number
+            lastChanged: timestamp
+
+      feeder (subcollection)
         └── current (document)
             level: number
             min: number
             isUsingThreshold: boolean
             lastFilled: timestamp
 
-      waterReservoir (subcollection)
+      waterThrough (subcollection)
         └── current (document)
             level: number
             min: number
             lastFilled: timestamp
 
-      externalTanks (subcollection)
+      waterReservoir (subcollection)
         └── current (document)
             level: number
             capacity: number
             
-      externalTanks (subcollection)
+      foodReservoir (subcollection)
         └── current (document)
             level: number
             capacity: number
@@ -185,6 +196,7 @@ coops (collection)
       cleaningSystem (subcollection)
         └── current (document)
             lastCleaned: timestamp
+            intervalDay: number
 
       feedMoments (subcollection)
         └── {momentId} (document)

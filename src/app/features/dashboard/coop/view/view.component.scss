@@ -1,5 +1,5 @@
 .page{
-  background-image: url('../../../../assets/coop-large-view-removebg-preview.png');
+  background-image: url('../../../../../assets/coop-large-view-removebg-preview.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -430,4 +430,141 @@ button.stop {
   padding: 1.5rem !important; /* Increased padding for better spacing */
   text-align: center !important; /* Center-align the text */
   z-index: 1500 !important; /* Ensure it appears above other elements */
+}
+
+.fan-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-width: 100px;
+
+  .fan-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  &.fan-on {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+
+    .fan-icon {
+      animation: spin 2s linear infinite;
+    }
+
+    &:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+    }
+  }
+
+  &.fan-off {
+    background-color: #f44336;
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+
+    .fan-icon {
+      opacity: 0.5;
+    }
+
+    &:hover {
+      background-color: #e53935;
+      transform: translateY(-2px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cameras-section {
+  margin-top: 2rem;
+  padding: 1rem;
+
+  .section-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  .cameras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .camera-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .camera-preview {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .camera-icon {
+        font-size: 2rem;
+        background: #e0f7fa;
+        padding: 0.5rem;
+        border-radius: 50%;
+      }
+
+      .camera-location {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 500;
+      }
+    }
+
+    .view-button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #0097a7;
+      }
+    }
+  }
+}
+
+// Add styles for the video dialog
+::ng-deep .video-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0;
+    background: transparent;
+  }
 }

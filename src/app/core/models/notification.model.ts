@@ -1,23 +1,20 @@
-export type NotificationType = 'info' | 'warning' | 'error';
+import { NotificationType } from '../enums/notification-type.enum';
+import { Timestamp } from 'firebase/firestore';
 
-export class Notification {
-  id: string;
-  message: string;
-  timestamp: Date;
-  coopId: string;
-  isRead: boolean;
-  type: NotificationType;
+export interface Notification {
+    id?: string;
+    message: string;
+    type: NotificationType;
+    createdAt: Timestamp;
+    isRead: boolean;
+    coopId: string;
+}
 
-  constructor(data: Partial<Notification> = {}) {
-    this.id = data.id || '';
-    this.message = data.message || '';
-    this.timestamp = data.timestamp ? new Date(data.timestamp) : new Date();
-    this.coopId = data.coopId || '';
-    this.isRead = data.isRead || false;
-    this.type = data.type || 'info';
-  }
-  
-  markAsRead(): void {
-    this.isRead = true;
-  }
+export interface NotificationPreferences {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+    critical: boolean;
+    warning: boolean;
+    info: boolean;
 }

@@ -1,1 +1,27 @@
-<p>ammonia-details works!</p>
+<div class="page-container">
+  <button class="return-button" (click)="goBack()">⬅ Retour</button>
+
+  <h3>
+    Niveau d'ammoniac actuel : {{ currentLevel }}ppm
+    <span class="status-badge" [class]="getLevelStatus()">
+      {{ getLevelStatus() | uppercase }}
+    </span>
+  </h3>
+
+  <canvas baseChart
+    [data]="ammoniaChartData"
+    [options]="{ responsive: true }"
+    [type]="'line'">
+  </canvas>
+
+  <div class="threshold-config">
+    <h4>Configuration des seuils</h4>
+    <div class="threshold-inputs">
+      <label>
+        Seuil maximum (ppm) :
+        <input type="number" [(ngModel)]="threshold.max" min="0" max="50" />
+      </label>
+    </div>
+    <button (click)="saveThreshold()">💾 Enregistrer</button>
+  </div>
+</div>
